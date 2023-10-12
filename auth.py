@@ -1,5 +1,5 @@
 #imports
-from flask import Blueprint, render_template,url_for,request,redirect
+from flask import Blueprint, render_template,url_for,request,redirect,flash
 from flask_login import login_user, current_user, login_required
 import sqlite3 as sql
 from passlib.hash import sha256_crypt
@@ -7,7 +7,6 @@ import random
 import string
 import smtplib
 from email.mime.text import MIMEText
-
 ###################################################################################
 
 auth_bp=Blueprint('auth',__name__)
@@ -26,37 +25,43 @@ def signup():
             number=request.form.get('number')
             password=request.form.get('password')
             confirmedpassword=request.form.get('confirmedpassword')
-            gender=request.form.get('gender')    
+            gender=request.form.get('gender')
+
+            print ("gender=", gender)
+
+                
             with sql.connect("database.db") as conn:
                 print ("Opened database successfully")
                 
                 cur = conn.cursor()
                 user=cur.execute("SELECT * FROM user WHERE email=?",(email,)).fetchone()
-                flag=False
-                if password!=confirmedpassword :
-                    print("password")
-                    flag = True
-                elif user:
-                    print("already exist")
-                    flag=True
-                else:
-                  
+                if user:
+                    flash('Email already exists.', category='error')
+                elif len(fullname) < 2 or len(username)<2:
+                    flash('name must be greater than 1 character.', category='error')
+                elif '@' not in email:    
+                    flash('Please enter valid mail.', category='error')
+                elif len(password) < 6:
+                    flash('Password must be at least 7 characters.', category='error')
+                elif  password != confirmedpassword:
+                    flash('Passwords don\'t match.', category='error')
+                elif gender is None:
+                    flash('Please select your gender.', category='error')   
+                else:                  
                     cur.execute("""INSERT INTO user (fullname,username,email,phone_number,pass,gender)
                                 VALUES (?,?,?,?,?,?)""",(fullname,username,email,number,sha256_crypt.encrypt(password),gender))
                     print (fullname,username,email,number,password,confirmedpassword,gender)
+                    return redirect(url_for('auth.login'))
                 conn.commit()
+                
         except Exception as e:
             conn.rollback()
             print("insertion err:"+str(e))
-        finally:
-            if flag:
-                return render_template('signup.html')
-            else:
-                return redirect(url_for('auth.login'))
+            
                 
-            conn.close()
-    else:
-        return render_template('signup.html')
+        conn.close()
+
+    return render_template('signup.html')
            
 
 
@@ -79,11 +84,14 @@ def login():
                         user=cur.execute("SELECT * FROM user WHERE email=?",(email,)).fetchone()
                         print ("cur2")
                         
-                        if user and sha256_crypt.verify(password,user[6]):
-                            print("done")
-                            return redirect(url_for('main.todolist_form'))
+                        if '@' not in email:
+                            flash('please enter correct mail',category='error')
+                        elif not user :
+                            flash('User not found',category='error')
+                        elif not sha256_crypt.verify(password,user[6]):
+                            flash('Please enter correct password',category='error')  
                         else:
-                            return render_template('login.html')
+                            return redirect(url_for('main.todolist_form'))
                             
 
                        
@@ -91,15 +99,15 @@ def login():
             print("login err:"+e)
                     
         conn.close() 
-    else:
-        return render_template('login.html')
+
+    return render_template('login.html')
     
 
 
 
 @auth_bp.route('/logout')
 def logout():
-    return render_template('index.html')
+    return render_template('login.html')
 
 
 

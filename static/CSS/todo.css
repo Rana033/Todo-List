@@ -125,3 +125,24 @@ body {
 .toDoList li:hover {
   text-decoration: line-through wavy #a48cae;
 }
+.logout {
+  position: fixed; 
+  top: 0; 
+  right: 0; 
+  background-color: white;
+  z-index: 1000; 
+  
+}
+
+.logout a {
+  float: left;
+  font-size: 16px;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.logout a:hover{
+  background-color:rgb(84, 227, 180);
+}
