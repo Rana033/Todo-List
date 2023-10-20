@@ -16,6 +16,8 @@ auth_bp=Blueprint('auth',__name__)
 
 @auth_bp.route('/signup', methods=['POST','GET'])
 def signup():
+    fullname=""
+    username=""
     if request.method == 'POST':
 
         try:
@@ -26,7 +28,7 @@ def signup():
             password=request.form.get('password')
             confirmedpassword=request.form.get('confirmedpassword')
             gender=request.form.get('gender')
-
+            
             print ("gender=", gender)
 
                 
@@ -102,6 +104,7 @@ def login():
 
     return render_template('login.html')
     
+
 
 
 

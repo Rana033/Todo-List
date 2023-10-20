@@ -6,11 +6,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="{{url_for('static', filename='CSS/todo.css')}}"
     />
     {% endblock %}
   </head>
+
   <body>
     {% block body %}
 
@@ -42,8 +47,21 @@
       <div>
         <ul class="toDoList">
           {% for item in todolist %}
-          <li>{{ item[0] }}</li>
-
+          <form
+            method="POST"
+            action="{{ url_for('main.delete', index=item[0]) }}"
+          >
+            <li class="listnote grid">
+              <div class="row">
+                <div class="col-md-3">
+                  <p>{{ item[1] }}</p>
+                  <button type="submit" class="delete btn btn-danger">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </div>
+              </div>
+            </li>
+          </form>
           {% endfor %}
         </ul>
       </div>

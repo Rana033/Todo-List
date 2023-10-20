@@ -109,7 +109,8 @@ body {
   border: 2px solid #494a4b;
 }
 
-.button:active, .button:focus {
+.button:active,
+.button:focus {
   transform: translateY(4px);
   padding-bottom: 0px;
   outline: 0;
@@ -117,21 +118,24 @@ body {
 
 .toDoList {
   text-align: left;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  list-style-type: none;
 }
 .toDoList li {
   position: relative;
   padding: 0.5rem;
 }
 .toDoList li:hover {
-  text-decoration: line-through wavy #a48cae;
+  text-decoration: line-through wavy red;
 }
 .logout {
-  position: fixed; 
-  top: 0; 
-  right: 0; 
-  background-color: white;
-  z-index: 1000; 
-  
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: whitesmoke;
+  z-index: 1000;
 }
 
 .logout a {
@@ -143,6 +147,37 @@ body {
   text-decoration: none;
 }
 
-.logout a:hover{
-  background-color:rgb(84, 227, 180);
+.logout a:hover {
+  background-color: rgb(84, 227, 180);
+}
+
+.delete {
+  background-color: whitesmoke;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete:hover {
+  color: red;
+}
+.toDoList {
+  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 5px;
+  list-style-type: none;
+}
+
+.listnote p {
+  display: inline;
+  flex: 1;
+  margin: 0;
+  padding: 5px;
+}
+
+.listnote button {
+  float: right;
+  margin-right: 80px;
 }

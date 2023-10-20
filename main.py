@@ -43,6 +43,7 @@ def todolist_form():
 
 @main_bp.route('/todolist',methods=['GET'])
 def todolist_show():   
+    sorted_todolist=[]
     try:
         with sql.connect("database.db") as conn:
                 print ("Opened database successfully")
@@ -50,7 +51,7 @@ def todolist_show():
                 cur = conn.cursor()                  
                 
                 sorted_todolist= cur.execute("""
-                            SELECT todo FROM TODO ORDER BY id DESC""").fetchall()
+                            SELECT id,todo FROM TODO ORDER BY id DESC""").fetchall()
                 print(sorted_todolist)   
                 conn.commit()
     
@@ -62,3 +63,20 @@ def todolist_show():
     return render_template('todo.html',todolist=sorted_todolist)
 
 
+@main_bp.route("/delete/<int:index>", methods=["POST"])
+def delete(index):
+    if index >= 0:
+        try:
+            with sql.connect("database.db") as conn:
+                print("Opened database successfully")
+
+                cur = conn.cursor()
+
+                cur.execute("DELETE FROM TODO WHERE id=?", (index,))
+                conn.commit()
+        except Exception as e:
+            print(f"An error occurred while deleting the note: {e}")
+    else:
+        flash('Note not found', category='error')
+
+    return redirect(url_for("main.todolist_show"))
